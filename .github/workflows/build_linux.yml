@@ -1,0 +1,131 @@
+name: Linux Packager
+run-name: Package DRSuite Viewer for Linux by @${{ github.actor }}
+
+env:
+  VERSION: 25a
+  ASSETS_VERSION: 25a
+  RELEASEVERSION: ${{ github.ref_name }}
+  SOLUTION_FILE_PATH: .
+  BUILD_CONFIGURATION: Release
+  QTVers: 6.9.2
+on:
+  workflow_dispatch:
+  release:
+    types: [created]  
+  push:
+    branches: [ "main" ]
+
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: [ ubuntu-22.04 ]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: setup vars
+      run: |
+        echo "Package=DRViewer-25a-x86_64.AppImage" >> $GITHUB_ENV      
+        echo "ZipFile=DRViewer-25a-x86_64.zip" >> $GITHUB_ENV      
+        echo "SHA_SHORT=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
+        echo "BUILDDATE=$(date +'%Y-%m-%dT%H%M%S')" >> $GITHUB_ENV
+        
+    - name: prep
+      run: install -d buildGUI
+      
+    - name: check dirs
+      working-directory: buildGUI
+      run: |
+        pwd
+        ls ../DRViewer.pro
+        
+    - name: build requirements
+      if: runner.environment != 'self-hosted'
+      run: sudo apt-get -y install --fix-missing xvfb libgl1-mesa-dev freeglut3-dev libxkbcommon-x11-0 libxcb-cursor-dev libxcb-xinerama0-dev libxcb-randr0-dev libxcb-xtest0-dev libxcb-shape0-dev libxcb-xkb-dev libxcb-icccm4 libxcb-keysyms1
+
+    - name: deployment requirements
+      if: runner.environment != 'self-hosted'
+      run: |
+        install -d $HOME/Deploy
+        cd $HOME/Deploy
+        wget https://github.com/linuxdeploy/linuxdeploy/releases/download/1-alpha-20251107-1/linuxdeploy-x86_64.AppImage
+        wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/1-alpha-20250213-1/linuxdeploy-plugin-qt-x86_64.AppImage 
+        chmod +x linuxdeploy-plugin-qt-x86_64.AppImage linuxdeploy-x86_64.AppImage
+    - name: install aqtinstall
+      if: runner.environment != 'self-hosted'
+      run: |
+        pip install -U pip
+        pip install aqtinstall
+
+    - name: install Qt         
+      if: runner.environment != 'self-hosted'
+      run: |
+        echo $HOME/Qt
+        install -d $HOME/Qt
+        aqt install-qt linux desktop 6.9.2 -O $HOME/Qt
+        
+    - name: check dirs
+      working-directory: buildGUI
+      run: |
+        pwd
+        ls $HOME/Qt/6.9.2/gcc_64/bin/qmake ../DRViewer.pro
+
+    - name: qmake
+      working-directory: buildGUI
+      run: |
+        $HOME/Qt/6.9.2/gcc_64/bin/qmake ../DRViewer.pro
+        
+    - name: make
+      working-directory: buildGUI
+      run: make -j
+      
+    - name: make App
+      run: |
+        DISABLE_COPYRIGHT_FILES_DEPLOYMENT=1 $HOME/Deploy/linuxdeploy-x86_64.AppImage --appdir DRViewer -e buildGUI/DRViewer -o appimage -d linux_deploy/DRViewer.desktop -i linux_deploy/DRViewer.png 
+
+    - name: make App pt 2
+      run: |
+        QMAKE=$HOME/Qt/6.9.2/gcc_64/bin/qmake $HOME/Deploy/linuxdeploy-plugin-qt-x86_64.AppImage --appdir DRViewer 
+        cp LICENSE.txt DRViewer
+        cp COPYRIGHT.txt DRViewer
+        cp ThirdPartyLicenses.txt DRViewer
+
+    - name: Save Package Folder as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: drviewer-${{env.BUILDDATE}}-${{ env.SHA_SHORT }}
+        # path: buildGUI/DRViewer 
+        path: DRViewer
+        overwrite: true  
+        
+    - name: Save Package Folder as Zip for Release
+      if: github.event_name == 'release'
+      run: |
+        zip -r ${{env.ZipFile}} DRViewer
+
+    - name: Save AppImage as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: DRViewerAppImage-${{env.BUILDDATE}}-${{ env.SHA_SHORT }}
+        # path: buildGUI/DRViewer 
+        path: DRViewer-25a-x86_64.AppImage
+        overwrite: true          
+
+    - name: Publish ${{ env.Package }}
+      if: github.event_name == 'release'
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "${{env.ZipFile}}" 
+        tag: ${{ env.RELEASEVERSION }}       
+        allowUpdates: true
+
+    - name: Publish ${{ env.Package }}
+      if: github.event_name == 'release'
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "${{ env.Package }}"
+        tag: ${{ env.RELEASEVERSION }}       
+        allowUpdates: true

@@ -1,0 +1,79 @@
+name: Windows Packager
+run-name: Package DRSuite Viewer for Windows by @${{ github.actor }}
+
+env:
+  VERSION: 25a
+  ASSETS_VERSION: 25a
+  RELEASEVERSION: ${{ github.ref_name }}
+  SOLUTION_FILE_PATH: .
+  BUILD_CONFIGURATION: Release
+  QTVers: 6.9.2
+on:
+  workflow_dispatch:
+  release:
+    types: [created]  
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: [ windows-latest ]
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ilammy/msvc-dev-cmd@v1
+        
+    - name: prep
+      run: |
+        mkdir buildGUI
+        mkdir Qt
+        dir
+ 
+    - name: install aqtinstall
+      if: runner.environment != 'self-hosted'
+      run: |
+        pip install -U pip
+        pip install aqtinstall
+
+    - name: install Qt         
+      if: runner.environment != 'self-hosted'
+      run: |
+        aqt install-qt windows desktop 6.9.2 win64_msvc2022_64 -O Qt
+
+    - name: qmake
+      working-directory: buildGUI
+      run: |
+        ..\Qt\6.9.2\msvc2022_64\bin\qmake.exe ../DRViewer.pro
+    - name: build
+      working-directory: buildGUI
+      run: nmake
+
+    - name: Deploy
+      run: |
+        mkdir DRViewer_Windows
+        copy buildGUI\release\DRViewer.exe DRViewer_Windows
+        copy LICENSE.txt DRViewer_Windows
+        copy COPYRIGHT.txt DRViewer_Windows
+        copy ThirdPartyLicenses.txt DRViewer_Windows
+        cd DRViewer_Windows
+        ..\Qt\6.9.2\msvc2022_64\bin\windeployqt.exe DRViewer.exe
+        cd ..
+        7z a DRViewer_Windows.zip DRViewer_Windows
+
+    - name: Save Build as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: DRViewer_Windows
+        path: DRViewer_Windows
+        overwrite: true          
+
+    - name: Publish DRViewer_Windows.zip
+      if: github.event_name == 'release'
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "DRViewer_Windows.zip"
+        tag: ${{ env.RELEASEVERSION }}       
+        allowUpdates: true

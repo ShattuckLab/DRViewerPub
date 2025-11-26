@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=DRViewer
+Exec=DRViewer
+Icon=DRViewer
+Comment=
+Terminal=true
+Categories=Utility;Viewer;Science;ImageProcessing;NumericalAnalysis;MedicalSoftware

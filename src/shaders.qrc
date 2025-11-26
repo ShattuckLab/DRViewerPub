@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>shaders/spectrum.frag</file>
+        <file>shaders/spectrum.vert</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>images/DRViewer.icns</file>
+        <file>images/spectrum256px.png</file>
+    </qresource>
+</RCC>

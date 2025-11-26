@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>RelaxationToolboxForm</class>
+ <widget class="QWidget" name="RelaxationToolboxForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>354</width>
+    <height>606</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>120</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="acceptDrops">
+   <bool>true</bool>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QPushButton" name="loadSpectralNIIButton">
+       <property name="maximumSize">
+        <size>
+         <width>50</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QPushButton" name="loadMaskButton">
+       <property name="text">
+        <string>Comp Mask</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="maskFilenameLabel">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="filenameLabel">
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Sunken</enum>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="spectralPlotGrid">
+     <item row="3" column="0">
+      <widget class="VerticalTextLabel" name="vAxisLabel">
+       <property name="maximumSize">
+        <size>
+         <width>10</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>v-axis</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0" colspan="6">
+      <widget class="QLabel" name="positionInfo">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="2">
+      <widget class="QLabel" name="uAxisLabel">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>u-axis</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignHCenter|Qt::AlignTop</set>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="4">
+      <widget class="ColorBar" name="colorbarWidget" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>80</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>200</width>
+         <height>16777215</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="2">
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>10</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="3" column="5">
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>5</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="4" column="2">
+      <widget class="QLabel" name="uaxisBlankSpace">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>12</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
+      <widget class="PlotWidget" name="uPlotWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>50</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2">
+      <widget class="SpectralImageWidget" name="spectralImageWidget" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>100</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string extracomment="spectrum!"/>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="3">
+      <widget class="PlotWidget" name="vPlotWidget" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>50</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>50</width>
+         <height>16777215</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLabel" name="vaxisBlankSpace">
+       <property name="minimumSize">
+        <size>
+         <width>40</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>        </string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="2" column="0" colspan="6">
+      <widget class="QLabel" name="infoLabel">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>100</height>
+        </size>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Sunken</enum>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="4">
+      <widget class="QLabel" name="componentLabel">
+       <property name="minimumSize">
+        <size>
+         <width>20</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>slice</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0" colspan="3">
+      <widget class="QCheckBox" name="showAverageSpectrumCheckBox">
+       <property name="text">
+        <string>show avg</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0" colspan="2">
+      <widget class="QCheckBox" name="axisPlotCheckBox">
+       <property name="text">
+        <string>axis plots</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QCheckBox" name="showSpectrumImageCheckBox">
+       <property name="text">
+        <string>image</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="1" colspan="3">
+      <widget class="QSlider" name="componentSlider">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1" colspan="2">
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>5</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="8" column="2">
+      <widget class="QSpinBox" name="nContoursSpinBox">
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="0">
+      <widget class="QPushButton" name="spotlightButton">
+       <property name="text">
+        <string>Spotlight</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="2">
+      <widget class="QCheckBox" name="darkBackGroundCheckBox">
+       <property name="text">
+        <string>dark bkg</string>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0">
+      <widget class="QPushButton" name="componentButton">
+       <property name="text">
+        <string>Component</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="0" colspan="2">
+      <widget class="QCheckBox" name="contourCheckBox">
+       <property name="text">
+        <string>contours</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="6">
+      <widget class="QLabel" name="spotlightRadiusLabel">
+       <property name="text">
+        <string>0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="10" column="1" colspan="5">
+      <widget class="QSlider" name="spotlightRadiusSlider">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="5" colspan="2">
+      <widget class="QPushButton" name="compositeViewButton">
+       <property name="text">
+        <string>Compose</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="4" colspan="3">
+      <widget class="QCheckBox" name="interpolateContoursCheckBox">
+       <property name="text">
+        <string>interpolate</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="3" colspan="4">
+      <widget class="QCheckBox" name="integrate3DCheckBox">
+       <property name="text">
+        <string>integrate3D</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="3" colspan="4">
+      <widget class="QCheckBox" name="colorCheckBox">
+       <property name="text">
+        <string>color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="3" colspan="4">
+      <widget class="QCheckBox" name="showContourTickLabelsCheckBox">
+       <property name="text">
+        <string>tick labels</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="6">
+      <widget class="QLineEdit" name="zSliceEdit">
+       <property name="maximumSize">
+        <size>
+         <width>40</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::NoFocus</enum>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1" colspan="5">
+      <widget class="QSlider" name="zSliceSlider">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>SpectralImageWidget</class>
+   <extends>QWidget</extends>
+   <header>spectralimagewidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>VerticalTextLabel</class>
+   <extends>QLabel</extends>
+   <header>verticaltextlabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>PlotWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">plotwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ColorBar</class>
+   <extends>QWidget</extends>
+   <header>colorbar.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

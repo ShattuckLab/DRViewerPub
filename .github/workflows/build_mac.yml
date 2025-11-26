@@ -1,0 +1,79 @@
+name: Mac Packager
+run-name: Package DRSuite Viewer for Mac by @${{ github.actor }}
+
+env:
+  VERSION: 25a
+  ASSETS_VERSION: 25a
+  RELEASEVERSION: ${{ github.ref_name }}
+  SOLUTION_FILE_PATH: .
+  BUILD_CONFIGURATION: Release
+  QTVers: 6.9.2
+on:
+  workflow_dispatch:
+  release:
+    types: [created]  
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: [ macos-15-intel ]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: setup vars
+      run: |
+        echo "Package=DRViewer25a_mac_x86_64.dmg" >> $GITHUB_ENV      
+        echo "SHA_SHORT=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
+        echo "BUILDDATE=$(date +'%Y-%m-%dT%H%M%S')" >> $GITHUB_ENV
+        
+    - name: prep
+      run: install -d buildGUI
+
+    - name: install aqtinstall
+      if: runner.environment != 'self-hosted'
+      run: |
+        pip install -U pip
+        pip install aqtinstall
+
+    - name: install Qt         
+      if: runner.environment != 'self-hosted'
+      run: |
+        install -d $HOME/Qt
+        aqt install-qt mac desktop 6.9.2 -O $HOME/Qt
+
+    - name: qmake
+      working-directory: buildGUI
+      run: |
+        $HOME/Qt/6.9.2/macos/bin/qmake ../DRViewer.pro
+        
+    - name: make
+      working-directory: buildGUI
+      run: make -j
+      
+    - name: make App
+      working-directory: buildGUI
+      run: |
+        $HOME/Qt/6.9.2/macos/bin/macdeployqt DRViewer.app -dmg
+        mv DRViewer.dmg ../${{env.Package}}
+
+    - name: Save DMG as Artifact
+      if: github.event_name != 'release'
+      uses: actions/upload-artifact@v4
+      with:
+        name: drviewer-${{env.BUILDDATE}}-${{ env.SHA_SHORT }}
+        # path: buildGUI/DRViewer 
+        path: ${{env.Package}}
+        overwrite: true  
+
+    - name: Publish ${{ env.Package }}
+      if: github.event_name == 'release'
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: ${{env.Package}} 
+        tag: ${{ env.RELEASEVERSION }}       
+        allowUpdates: true
